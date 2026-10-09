@@ -1,1 +1,2 @@
-# My New Project
+# Program that helps nonprofit organizations adiministrate 
+
