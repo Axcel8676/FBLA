@@ -4,6 +4,17 @@
 import sqlite3 # to create the db
 
 
+# this method may only be call by the package
+def verify(database:str)->str:
+    result = ""
+    if database.lower() == "admin":
+        result = "databases/admin.db"
+    elif database.lower() =="users":
+        result = "databases/users.db"
+    else:
+        print("Couldn't find database")
+    return result
+
 def start():#Must call at the begin
     "will start the databases if not exist"
     # to connect us with the data base 
@@ -30,18 +41,11 @@ def start():#Must call at the begin
 
     # with will call close and commit auto
 
-#they only need to write admin or user
+#they only need to write admin or users
 def add(database:str,*keys):
     "will add an user to the given database"
-    addres = ""
+    addres = verify(database)
 
-    if database.lower() == "admin":
-        addres = "databases/admin.db"
-    elif database.lower() =="users":
-        addres = "databases/users.db"
-    else:
-        print("Couldn't find database")
-        
     if addres :
         temp = "("
         for i in range(len(keys)):
@@ -63,19 +67,11 @@ def add(database:str,*keys):
 #needs db and a tuple that contains strings
 def display(database:str,*keys:str):
     """
-    Will the data from the given databse,
+    Will give the data from the given databse,
     it accepts the arguments that want to be 
-    display
+    display like id, name 
     """
-    addres = ""
-    
-    if database.lower() == "admin":
-        addres = "databases/admin.db"
-    elif database.lower() =="users":
-        addres = "databases/users.db"
-    else:
-        print("Couldn't find database")
-            
+    addres =  verify(database)
     if addres:
         with sqlite3.connect(addres) as con:
             cursor = con.cursor()
@@ -84,7 +80,31 @@ def display(database:str,*keys:str):
             for i in len(keys):
                 for a in temp:
                     #will print each requested data
-                    print(keys[i]+": ",a[i])
+                    print(keys[i]+": ",a[i])#may return an error
+
+
+
+def searchId(database:str,id:int)->tuple:#returns tuple because will only return one user/admin
+    "will search the user/admin from the given id"
+    addres =verify(database)
+    if addres:
+        with sqlite3.connect(addres) as con:
+            cursor = con.cursor()
+            cursor.execute(f"SELECT {id} from usuarios")
+            return cursor.fetchone()
+
+        
+# bacuse is look by name could return a lot of list cointaing each the keys of each user/admin
+# admins Must not have the same userName
+# will return list of tuples 
+def searchName(database:str, name:str)->list:
+    "will search the user/admin from the given name"
+    addres =verify(database)
+    if addres:
+        with sqlite3.connect(addres) as con:
+            cursor = con.cursor()
+            cursor.execute(f"SELECT {name} from usuarios")
+            return cursor.fetchall()
 
 def delete(database:str,userid:int):
     "Will delete a user from the given database"
