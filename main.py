@@ -22,23 +22,45 @@ dbFunctions.start()
 sigin = False
 
 # create a directory for the msj
-msj = """ 
-Welcome plese write: 
-sigin if have an account
-create if don't have an account
+
+logo = """
+
+⠀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣠⣶⣿⣶⡾⠁
+⠠⣿⡀⠀⠀⠀⢀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠀
+⠀⠙⢿⣶⣶⣾⣿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠛⠿⠃⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡃⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⢿⣿⣿⠟⠁⠀⠀⠀⠈⢿⣿⠛⠻⢿⣦⡀⠀⠀
+⠀ ⠀⠀⠀⠀⠀⣿⠟⠁⠘⢿⣿⠀⠀⠀⠀⠀⠀⠸⣿⡀⠀⠀⠹⠷⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⣿⣤⠀⠀⠀⠙⠷⠶⠀⠀⠀⠀⠀⠙⠛⠁⠀⠀⠀
+"""
+
+msj = logo+""" 
+
+Options:
+    -signin          Sigin in an Admin account
+    -create          Create an admin account
 
 """
 
 while(True):
-    if sigin:#to verify the admin has a account
+    if sigin==False:#to verify the admin has a account
         print(msj)
         comand = input("Comand: ")
+
         if(comand.lower() == "sigin"):
             userName = input("User: ")
             dbFunctions.searchName("admin",userName)
+            # for the moment skip 
+            sigin = True
+
         elif(comand.lower()== "create"):
-            pass
+            adminUser = input("Please enter the username for the account: ")
+            # needs yo verify that User hasn't been selected
+            password = input("Please enter the password: ")
+            dbFunctions.add("admin",adminUser,password)
+            print("All set please sig in")
+
         else:
             print("Wrong command please try again")
     else:
-        pass
+        print("Welcome you are here")

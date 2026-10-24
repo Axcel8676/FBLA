@@ -2,7 +2,7 @@
 # will cointain the  id, username and password
 
 import sqlite3 # to create the db
-
+# change the execute for the table 
 
 # this method may only be call by the package
 def verify(database:str)->str:
@@ -33,7 +33,7 @@ def start():#Must call at the begin
     #     cursor = con.cursor()
     #     cursor.execute(
     #         """
-    #         CREATE TABLE if not exists adminUsers
+    #         CREATE TABLE if not exists users
     #         (id INTEGER primary key, userName TEXT, password TEXT)
     #         """
     #     )
@@ -56,10 +56,16 @@ def add(database:str,*keys):
 
         with sqlite3.connect(addres) as con:
             cursor = con.cursor()
-            cursor.execute(
-                f"insert into usuarios values{temp}",
-                keys,
-            )
+            if database.lower() == "admin":
+                cursor.execute(
+                    f"insert into adminUsers values{temp}",
+                    keys,
+                )
+            else:
+                cursor.execute(
+                    f"insert into users values{temp}",
+                    keys,
+                )
         # the reason whe put the values after is to prevent 
         # a sql injection that is a way that people use to 
         # stole your data   
@@ -75,7 +81,10 @@ def display(database:str,*keys:str):
     if addres:
         with sqlite3.connect(addres) as con:
             cursor = con.cursor()
-            cursor.execute(f"SELECT {keys} from usuarios")
+            if database.lower() == "admin":
+                cursor.execute(f"SELECT {keys} from adminUsers")
+            else:
+                cursor.execute(f"SELECT {keys} from users")
             temp = cursor.fetchall()#will return all the data that has that specifications
             for i in len(keys):
                 for a in temp:
@@ -90,9 +99,12 @@ def searchId(database:str,id:int)->tuple:#returns tuple because will only return
     if addres:
         with sqlite3.connect(addres) as con:
             cursor = con.cursor()
-            cursor.execute(f"SELECT {id} from usuarios")
-            return cursor.fetchone()
-
+            if database.lower()== 'admin':
+                cursor.execute(f"SELECT {id} from adminUsers")
+                return cursor.fetchone()
+            else:
+                cursor.execute(f"SELECT {id} from users")
+                return cursor.fetchone()
         
 # bacuse is look by name could return a lot of list cointaing each the keys of each user/admin
 # admins Must not have the same userName
@@ -103,9 +115,14 @@ def searchName(database:str, name:str)->list:
     if addres:
         with sqlite3.connect(addres) as con:
             cursor = con.cursor()
-            cursor.execute(f"SELECT {name} from usuarios")
-            return cursor.fetchall()
+            if database.lower()== 'admin':
+                cursor.execute(f"SELECT {name} from adminUsers")
+                return cursor.fetchall()
+            else:
+                cursor.execute(f"SELECT {name} from users")
+                return cursor.fetchall()
 
+            
 def delete(database:str,userid:int):
     "Will delete a user from the given database"
     
