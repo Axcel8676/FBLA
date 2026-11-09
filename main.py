@@ -17,50 +17,36 @@
 # task 2: set up the command line application in which the firts thing is to ask for sign in or create account
 # task 3: set up a menu in which they could interact more friendly depending on what they want to do
 from databases import dbFunctions
+from msj import commands
 
 dbFunctions.start()
 sigin = False
 
-# create a directory for the msj
+def sigIn()->bool:
+    sigin = False
+    comand = input("Comand: ")
+    
+    if(comand.lower() == "s"):#Sigin
+        userName = input("User: ")
+        dbFunctions.searchName("admin",userName)
+        # for the moment skip no password 
+        sigin = True
+    
+    elif(comand.lower()== "c"):#Create
+        adminUser = input("Please enter a Username for the account: ")
+        # needs yo verify that User hasn't been selected
+        password = input("Please enter the password: ")
+        dbFunctions.add("admin",adminUser,password)
+        print("All set please sig in to continue")
+        sigin = True
 
-logo = """
-
-⠀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣠⣶⣿⣶⡾⠁
-⠠⣿⡀⠀⠀⠀⢀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠀
-⠀⠙⢿⣶⣶⣾⣿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠛⠿⠃⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡃⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⢿⣿⣿⠟⠁⠀⠀⠀⠈⢿⣿⠛⠻⢿⣦⡀⠀⠀
-⠀ ⠀⠀⠀⠀⠀⣿⠟⠁⠘⢿⣿⠀⠀⠀⠀⠀⠀⠸⣿⡀⠀⠀⠹⠷⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⣿⣤⠀⠀⠀⠙⠷⠶⠀⠀⠀⠀⠀⠙⠛⠁⠀⠀⠀
-"""
-
-msj = logo+""" 
-
-Options:
-    -signin          Sigin in an Admin account
-    -create          Create an admin account
-
-"""
+    return sigin
 
 while(True):
-    if sigin==False:#to verify the admin has a account
-        print(msj)
-        comand = input("Comand: ")
-
-        if(comand.lower() == "sigin"):
-            userName = input("User: ")
-            dbFunctions.searchName("admin",userName)
-            # for the moment skip 
-            sigin = True
-
-        elif(comand.lower()== "create"):
-            adminUser = input("Please enter the username for the account: ")
-            # needs yo verify that User hasn't been selected
-            password = input("Please enter the password: ")
-            dbFunctions.add("admin",adminUser,password)
-            print("All set please sig in")
-
-        else:
-            print("Wrong command please try again")
+    print(commands.initialOp)
+    if sigIn():#to verify the admin has a account
+        while(True):
+            print("You are in")
+            holder = input("Command: ")
     else:
-        print("Welcome you are here")
+        print("Error please try again")

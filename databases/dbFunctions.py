@@ -3,6 +3,7 @@
 
 import sqlite3 # to create the db
 # change the execute for the table 
+# fix table to be auto for the ids
 
 # this method may only be call by the package
 def verify(database:str)->str:
@@ -24,7 +25,7 @@ def start():#Must call at the begin
         cursor.execute(
             """
             CREATE TABLE if not exists adminUsers
-            (id INTEGER primary key, userName TEXT, password TEXT)
+            (id INTEGER PRIMARY KEY, userName TEXT, password TEXT)
             """
             )
 
@@ -46,8 +47,9 @@ def add(database:str,*keys):
     "will add an user to the given database"
     addres = verify(database)
 
+    fullkeys = (None,)+keys
     if addres :
-        temp = "("
+        temp = "(?,"
         for i in range(len(keys)):
             if i == len(keys)-1:#meaning we are on the last element
                 temp+="?)"
@@ -64,7 +66,7 @@ def add(database:str,*keys):
             else:
                 cursor.execute(
                     f"insert into users values{temp}",
-                    keys,
+                    fullkeys,
                 )
         # the reason whe put the values after is to prevent 
         # a sql injection that is a way that people use to 
@@ -109,7 +111,7 @@ def searchId(database:str,id:int)->tuple:#returns tuple because will only return
 # bacuse is look by name could return a lot of list cointaing each the keys of each user/admin
 # admins Must not have the same userName
 # will return list of tuples 
-def searchName(database:str, name:str)->list:
+def searchName(database:str, name:str)->list:#use a try so there's no error display if not found
     "will search the user/admin from the given name"
     addres =verify(database)
     if addres:
